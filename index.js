@@ -17,6 +17,8 @@ app.use("/api/v1/auth", require("./routes/jwtAuth"));
 
 app.use("/api/v1/dashboard", require("./routes/dashboard"));
 
+app.use("/api/v1/news", require("./news/index.js"));
+
 // temp table creation temp table creation temp table creation temp table creation temp table creation temp table creation temp table creation
 
 app.get("/api/v1", async (req, res) => {
