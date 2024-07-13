@@ -9,7 +9,7 @@ const authorization = require("../middleware/authorization");
 
 router.post("/register", validInfo, async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, preferences } = req.body;
     const user = await db.query("SELECT * FROM users WHERE user_email = $1;", [
       email,
     ]);
@@ -20,8 +20,8 @@ router.post("/register", validInfo, async (req, res) => {
     const salt = await bcrypt.genSalt(saltRounds);
     const bcryptPassword = await bcrypt.hash(password, salt);
     const newUser = await db.query(
-      "INSERT INTO users (user_name, user_email, user_password) values ($1, $2, $3) RETURNING *;",
-      [name, email, bcryptPassword]
+      "INSERT INTO users (user_name, user_email, user_password, user_preferences) values ($1, $2, $3, $4) RETURNING *;",
+      [name, email, bcryptPassword, preferences]
     );
     const token = jwtGenerator(newUser.rows[0].user_id);
     res.status(201).json({
@@ -30,6 +30,7 @@ router.post("/register", validInfo, async (req, res) => {
         token,
         user_id: newUser.rows[0].user_id,
         user_name: newUser.rows[0].user_name,
+        user_preferences: newUser.rows[0].user_preferences,
       },
     });
   } catch (error) {
@@ -67,6 +68,7 @@ router.post("/login", validInfo, async (req, res) => {
         token,
         user_id: user.rows[0].user_id,
         user_name: user.rows[0].user_name,
+        user_preferences: user.rows[0].user_preferences,
       },
     });
   } catch (error) {

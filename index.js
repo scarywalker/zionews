@@ -17,12 +17,11 @@ app.use("/api/v1/auth", require("./routes/jwtAuth"));
 
 app.use("/api/v1/dashboard", require("./routes/dashboard"));
 
-
 // temp table creation temp table creation temp table creation temp table creation temp table creation temp table creation temp table creation
 
 app.get("/api/v1", async (req, res) => {
   await db.query(
-    'CREATE EXTENSION IF NOT EXISTS "uuid-ossp"; CREATE TABLE IF NOT EXISTS users (user_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(), user_name VARCHAR(255) NOT NULL, user_email VARCHAR(255) NOT NULL, user_password VARCHAR(255) NOT NULL);'
+    'CREATE EXTENSION IF NOT EXISTS "uuid-ossp"; CREATE TABLE IF NOT EXISTS users (user_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(), user_name VARCHAR(255) NOT NULL, user_email VARCHAR(255) NOT NULL, user_password VARCHAR(255) NOT NULL, user_preferences TEXT[]);'
   );
   res.sendStatus(200);
 });
