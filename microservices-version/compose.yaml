@@ -1,5 +1,4 @@
-
-version: '3.9'
+version: "3.9"
 
 services:
   db:
@@ -22,10 +21,6 @@ services:
     volumes:
       - ./gateway:/usr/src/app
       - /usr/src/app/node_modules
-      # - ./utils:/usr/src/utils
-      # - /usr/src/utils/node_modules
-      # - ./middleware:/usr/src/middleware
-      # - /usr/src/middleware/node_modules
     environment:
       - PORT1=4000
     depends_on:
@@ -85,6 +80,41 @@ services:
     depends_on:
       - db
 
+  chat:
+    build:
+      context: ./chat
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./auth:/usr/src/app
+      - /usr/src/app/node_modules
+    environment:
+      - PORT5=8000
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASS=password
+      - DB_NAME=zionet_db
+    depends_on:
+      - db
+
+  email:
+    build:
+      context: ./email
+    ports:
+      - "9000:9000"
+    volumes:
+      - ./auth:/usr/src/app
+      - /usr/src/app/node_modules
+    environment:
+      - PORT6=9000
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASS=password
+      - DB_NAME=zionet_db
+    depends_on:
+      - db
 
 volumes:
   db-data:
