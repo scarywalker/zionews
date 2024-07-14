@@ -1,0 +1,80 @@
+
+version: '3.9'
+
+services:
+  db:
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: zionet_db
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./db:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
+
+  gateway:
+    build:
+      context: ./gateway
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./gateway:/usr/src/app
+      - /usr/src/app/node_modules
+      # - ./utils:/usr/src/utils
+      # - /usr/src/utils/node_modules
+      # - ./middleware:/usr/src/middleware
+      # - /usr/src/middleware/node_modules
+    environment:
+      - PORT1=4000
+    depends_on:
+      - db
+
+  dashboard:
+    build:
+      context: ./dashboard
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./dashboard:/usr/src/app
+      - /usr/src/app/node_modules
+      # - ./utils:/usr/src/utils
+      # - /usr/src/utils/node_modules
+      # - ./middleware:/usr/src/middleware
+      # - /usr/src/middleware/node_modules
+    environment:
+      - PORT2=5000
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASS=password
+      - DB_NAME=zionet_db
+    depends_on:
+      - db
+
+  auth:
+    build:
+      context: ./auth
+    ports:
+      - "6000:6000"
+    volumes:
+      - ./auth:/usr/src/app
+      - /usr/src/app/node_modules
+      # - ./utils:/usr/src/utils
+      # - /usr/src/utils/node_modules
+      # - ./middleware:/usr/src/middleware
+      # - /usr/src/middleware/node_modules
+    environment:
+      - PORT3=6000
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASS=password
+      - DB_NAME=zionet_db
+    depends_on:
+      - db
+
+
+volumes:
+  db-data:
