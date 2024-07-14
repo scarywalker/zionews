@@ -39,10 +39,6 @@ services:
     volumes:
       - ./dashboard:/usr/src/app
       - /usr/src/app/node_modules
-      # - ./utils:/usr/src/utils
-      # - /usr/src/utils/node_modules
-      # - ./middleware:/usr/src/middleware
-      # - /usr/src/middleware/node_modules
     environment:
       - PORT2=5000
       - DB_HOST=db
@@ -61,12 +57,26 @@ services:
     volumes:
       - ./auth:/usr/src/app
       - /usr/src/app/node_modules
-      # - ./utils:/usr/src/utils
-      # - /usr/src/utils/node_modules
-      # - ./middleware:/usr/src/middleware
-      # - /usr/src/middleware/node_modules
     environment:
       - PORT3=6000
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASS=password
+      - DB_NAME=zionet_db
+    depends_on:
+      - db
+
+  news:
+    build:
+      context: ./news
+    ports:
+      - "7000:7000"
+    volumes:
+      - ./auth:/usr/src/app
+      - /usr/src/app/node_modules
+    environment:
+      - PORT4=7000
       - DB_HOST=db
       - DB_PORT=5432
       - DB_USER=postgres

@@ -4,6 +4,9 @@ const axios = require("axios");
 const targetPort = (target) => {
   if (target == "dashboard") return "5000";
   if (target == "auth") return "6000";
+  if (target == "news") return "7000";
+  if (target == "chat") return "8000";
+  if (target == "email") return "9000";
   else return null;
 };
 
