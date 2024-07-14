@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const db = require("./db");
 const authorization = require("./middleware/authorization");
+const axios = require("axios")
 
 // get relevant news
 
@@ -26,7 +27,18 @@ router.get("/:id", authorization, async (req, res) => {
       console.log(parsedResponse);
       res.status(200).send("Await for email");
 
-      // http to gateway for email here
+      const analyzedNews = await axios({
+        method: "get",
+        url: `http://localhost:4000/api/v1/chat/${req.params.id}`,
+        data: parsedResponse,
+      })
+
+      await axios({
+        method: "get",
+        url: `http://localhost:4000/api/v1/email/${req.params.id}`,
+        data: analyzedNews,
+      })
+
 
     }
   } catch (error) {

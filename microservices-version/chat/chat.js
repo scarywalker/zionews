@@ -1,8 +1,19 @@
 const router = require("express").Router();
+const dotenv = require("dotenv");
+dotenv.config();
+import { ChatOpenAI } from "@langchain/openai";
+import { StructuredOutputParser } from "langchain/output_parsers";
 const db = require("./db");
 const authorization = require("./middleware/authorization");
 
-// get relevant news
+// create a model
+
+const model = new ChatOpenAI({
+  modelName: "gpt-3.5-turbo",
+  temperature: 0.2,
+  maxTokens: 1000,
+  verbose: true,
+});
 
 router.get("/:id", authorization, async (req, res) => {
   try {
@@ -11,24 +22,17 @@ router.get("/:id", authorization, async (req, res) => {
     ]);
 
     const preferences = user.rows[0].user_preferences;
-    const preferencesQuery = preferences.join(" OR ");
-    const apiKey = "pub_48532a2edba99e0f0b8231aaccb2ae4a940bb";
+    const preferencesQuery = preferences.join(" and ");
+    const articles = toString(req.body);
 
-    const response = await fetch(
-      `https://newsdata.io/api/1/latest?apikey=${apiKey}&q=${preferencesQuery}&language=en`
+    const selection = await model.invoke(
+      `analyze this list of articles: ${articles}, in order, list the 3 that best match my interests: ${preferencesQuery}, answer in a raw text formatted to json with their title description and url`
     );
-    const parsedResponse = await response.json();
 
-    if (response.status !== 200) {
-      console.log(parsedResponse);
-      res.status(parsedResponse.status);
-    } else {
-      console.log(parsedResponse);
-      res.status(200).send("Await for email");
+    console.log(selection);
 
-      // http to gateway for email here
-
-    }
+    res.status(200).send(selection)
+    
   } catch (error) {
     console.log(error);
     res.status(500).send("Server Error");

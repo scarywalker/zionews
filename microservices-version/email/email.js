@@ -30,6 +30,8 @@ router.get("/:id", authorization, async (req, res) => {
     const userNews = req.body;
     mailOptions[text] = userNews;
 
+    
+
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
         console.log(error);
