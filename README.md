@@ -17,14 +17,12 @@ Zionews is a straightforward and efficient service that allows you to create, lo
 2. Clone the repository:
    ```sh
    git clone https://github.com/scarywalker/zionews.git
-
-
-## Installation
-
-1 install docker
-2 run git clone https://github.com/scarywalker/zionews.git in the repository of your choice
-3 cd microservices-version
-4 docker compose up -d
+3. Navigate to the project directory:
+   ```sh
+   cd microservices-version
+4. Start the services using Docker Compose:
+   ```sh
+   docker compose up -d
 
 ## Usage
 
