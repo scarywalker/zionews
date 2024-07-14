@@ -1,10 +1,9 @@
 const router = require("express").Router();
 const dotenv = require("dotenv");
-dotenv.config();
-import { ChatOpenAI } from "@langchain/openai";
-import { StructuredOutputParser } from "langchain/output_parsers";
+const { ChatOpenAI } = require("@langchain/openai");
 const db = require("./db");
-const authorization = require("./middleware/authorization");
+// const authorization = require("./middleware/authorization");;
+dotenv.config();
 
 // create a model
 
@@ -13,9 +12,10 @@ const model = new ChatOpenAI({
   temperature: 0.2,
   maxTokens: 1000,
   verbose: true,
+  apiKey: process.env.OPENAI_API_KEY
 });
 
-router.get("/:id", authorization, async (req, res) => {
+router.post("/:id", async (req, res) => {
   try {
     const user = await db.query("SELECT * FROM users WHERE user_id = $1", [
       req.params.id,

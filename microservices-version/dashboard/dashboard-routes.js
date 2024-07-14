@@ -2,7 +2,7 @@ const router = require("express").Router();
 const db = require("./db");
 const authorization = require("./middleware/authorization");
 
-// get user that logged
+// get user that logged, useless till frontend
 
 router.get("/", authorization, async (req, res) => {
   try {
@@ -16,11 +16,6 @@ router.get("/", authorization, async (req, res) => {
     res.status(500).send("Server Error");
   }
 });
-
-// router.get("/", async (req, res) => {
-//   console.log("Received request at dashboard /");
-//   res.status(200).send("working");
-// });
 
 // update user
 

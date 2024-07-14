@@ -1,44 +1,44 @@
-const router = require("express").Router();
+const express = require("express");
+const router = express.Router();
 const nodemailer = require("nodemailer");
 const db = require("./db");
-const authorization = require("./middleware/authorization");
+require('dotenv').config();
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: "youremail@gmail.com",
-    pass: "yourpassword",
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
   },
 });
 
-let mailOptions = {
-  from: "youremail@gmail.com",
-  to: "",
-  subject: "The news you asked for",
-  text: "",
-};
-
-router.get("/:id", authorization, async (req, res) => {
+router.post("/:id", async (req, res) => {
   try {
     const user = await db.query("SELECT * FROM users WHERE user_id = $1", [
       req.params.id,
     ]);
 
+    if (user.rowCount === 0) {
+      return res.status(404).send("User not found");
+    }
+
     const userEmail = user.rows[0].user_email;
-    mailOptions[to] = userEmail;
+    const userNews = req.body
 
-    const userNews = req.body;
-    mailOptions[text] = userNews;
-
-    
+    let mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: userEmail,
+      subject: "The news you asked for",
+      text: userNews,
+    };
 
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
         console.log(error);
-        res.status(500).send("Server Error");
+        return res.status(500).send("Server Error");
       } else {
         console.log("Email sent: " + info.response);
-        res.status(200).send("email sent");
+        return res.status(200).send("Email sent");
       }
     });
   } catch (error) {

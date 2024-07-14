@@ -68,7 +68,7 @@ services:
     ports:
       - "7000:7000"
     volumes:
-      - ./auth:/usr/src/app
+      - ./news:/usr/src/app
       - /usr/src/app/node_modules
     environment:
       - PORT4=7000
@@ -86,7 +86,7 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./auth:/usr/src/app
+      - ./chat:/usr/src/app
       - /usr/src/app/node_modules
     environment:
       - PORT5=8000
@@ -95,7 +95,7 @@ services:
       - DB_USER=postgres
       - DB_PASS=password
       - DB_NAME=zionet_db
-      - OPENAI_API_KEY="sk-proj-sHGeOzQQE459KJ1A4mYvT3BlbkFJnXNB1GPr6LdiV6nsbIoE"
+      - OPENAI_API_KEY=sk-proj-sHGeOzQQE459KJ1A4mYvT3BlbkFJnXNB1GPr6LdiV6nsbIoE
     depends_on:
       - db
 
@@ -105,7 +105,7 @@ services:
     ports:
       - "9000:9000"
     volumes:
-      - ./auth:/usr/src/app
+      - ./email:/usr/src/app
       - /usr/src/app/node_modules
     environment:
       - PORT6=9000
@@ -114,6 +114,8 @@ services:
       - DB_USER=postgres
       - DB_PASS=password
       - DB_NAME=zionet_db
+      - EMAIL_USER=descartavel980@gmail.com
+      - EMAIL_PASS=Batatacomplexa98
     depends_on:
       - db
 
