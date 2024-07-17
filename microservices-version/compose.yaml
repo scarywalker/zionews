@@ -20,7 +20,7 @@ services:
       - "4000:4000"
     volumes:
       - ./gateway:/usr/src/app
-      - /usr/src/app/node_modules
+      # - /usr/src/app/node_modules
     environment:
       - PORT1=4000
     depends_on:
@@ -33,7 +33,7 @@ services:
       - "5000:5000"
     volumes:
       - ./dashboard:/usr/src/app
-      - /usr/src/app/node_modules
+      # - /usr/src/app/node_modules
     environment:
       - PORT2=5000
       - DB_HOST=db
@@ -51,7 +51,7 @@ services:
       - "6000:6000"
     volumes:
       - ./auth:/usr/src/app
-      - /usr/src/app/node_modules
+      # - /usr/src/app/node_modules
     environment:
       - PORT3=6000
       - DB_HOST=db
@@ -59,6 +59,7 @@ services:
       - DB_USER=postgres
       - DB_PASS=password
       - DB_NAME=zionet_db
+      - jwtSecret=potato
     depends_on:
       - db
 
@@ -69,7 +70,7 @@ services:
       - "7000:7000"
     volumes:
       - ./news:/usr/src/app
-      - /usr/src/app/node_modules
+      # - /usr/src/app/node_modules
     environment:
       - PORT4=7000
       - DB_HOST=db
@@ -87,7 +88,7 @@ services:
       - "8000:8000"
     volumes:
       - ./chat:/usr/src/app
-      - /usr/src/app/node_modules
+      # - /usr/src/app/node_modules
     environment:
       - PORT5=8000
       - DB_HOST=db
@@ -95,7 +96,7 @@ services:
       - DB_USER=postgres
       - DB_PASS=password
       - DB_NAME=zionet_db
-      - OPENAI_API_KEY=sk-proj-sHGeOzQQE459KJ1A4mYvT3BlbkFJnXNB1GPr6LdiV6nsbIoE
+      - OPENAI_API_KEY=sk-proj-UYjexviWNWQOaR6mGGKnT3BlbkFJdX0naF5NG90lsudI4bB9
     depends_on:
       - db
 
@@ -106,7 +107,7 @@ services:
       - "9000:9000"
     volumes:
       - ./email:/usr/src/app
-      - /usr/src/app/node_modules
+      # - /usr/src/app/node_modules
     environment:
       - PORT6=9000
       - DB_HOST=db
@@ -114,8 +115,10 @@ services:
       - DB_USER=postgres
       - DB_PASS=password
       - DB_NAME=zionet_db
-      - EMAIL_USER=descartavel980@gmail.com
-      - EMAIL_PASS=Batatacomplexa98
+      - MAIL_TRANSPORTER_PORT=465
+      - MAIL_TRANSPORTER_HOST=smtp.gmail.com
+      - MAIL_SENDER_USER=gabrielgdischon@gmail.com
+      - MAIL_SENDER_PASS=wlhb ddya pwga yiym
     depends_on:
       - db
 

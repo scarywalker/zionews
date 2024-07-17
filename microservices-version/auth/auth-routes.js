@@ -1,9 +1,11 @@
 const router = require("express").Router();
-const db = require("./db");
+const axios = require("axios");
 const bcrypt = require("bcryptjs");
+const db = require("./db");
 const jwtGenerator = require("./utils/jwtGenerator");
 const validInfo = require("./middleware/validInfo");
 const authorization = require("./middleware/authorization");
+const validateRequest = require("./middleware/validateRequest");
 
 // registering route
 
@@ -13,8 +15,9 @@ router.post("/register", validInfo, async (req, res) => {
     const user = await db.query("SELECT * FROM users WHERE user_email = $1;", [
       email,
     ]);
-    if (user.rows.length !== 0)
+    if (user.rows.length !== 0) {
       return res.status(401).send("User already exists");
+    }
 
     const saltRounds = 10;
     const salt = await bcrypt.genSaltSync(saltRounds);
@@ -77,7 +80,7 @@ router.post("/login", validInfo, async (req, res) => {
   }
 });
 
-// verification
+// verification to check if user is logged in frontend
 
 router.get("/is-verify", authorization, async (req, res) => {
   try {
@@ -87,5 +90,37 @@ router.get("/is-verify", authorization, async (req, res) => {
     res.status(500).send("Server Error");
   }
 });
+
+// handle validation everything that doesn't aim for auth, they all need authorization
+
+router.all(
+  "/:apiName/:path",
+  validateRequest,
+  authorization,
+  async (req, res) => {
+    console.log("b");
+    const { apiName, path } = req.params;
+
+    console.log(`validating request for ${apiName}/${path}`);
+
+    try {
+      const url = `http://gateway:4000/api/v1/${apiName}/${path}`;
+      const response = await axios({
+        method: req.method,
+        url: url,
+        data: req.body,
+        headers: {
+          token: req.get("token"),
+          isValid: "true",
+        },
+      });
+
+      res.status(response.status).json(response.data);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Server error" });
+    }
+  }
+);
 
 module.exports = router;

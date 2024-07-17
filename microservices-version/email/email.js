@@ -2,17 +2,39 @@ const express = require("express");
 const router = express.Router();
 const nodemailer = require("nodemailer");
 const db = require("./db");
-require('dotenv').config();
+require("dotenv").config();
 
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: process.env.MAIL_TRANSPORTER_HOST,
+  port: process.env.MAIL_TRANSPORTER_PORT,
+  secure: true,
   auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
+    user: "gabrielgdischon@gmail.com",
+    pass: "wlhb ddya pwga yiym",
   },
 });
 
+const sendEmail = (mailOptions) => {
+  return new Promise((resolve, reject) => {
+    transporter.sendMail(
+      {
+        from: "gabrielgdischon@gmail.com",
+        ...mailOptions,
+      },
+      (err, info) => {
+        err ? reject(err) : resolve(info);
+      }
+    );
+  });
+};
+
+console.log("zzzzzzzzzzzzzzzzzzz", process.env.MAIL_SENDER_PASS);
+
 router.post("/:id", async (req, res) => {
+  console.log(
+    "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz",
+    transporter
+  );
   try {
     const user = await db.query("SELECT * FROM users WHERE user_id = $1", [
       req.params.id,
@@ -23,24 +45,14 @@ router.post("/:id", async (req, res) => {
     }
 
     const userEmail = user.rows[0].user_email;
-    const userNews = req.body
+    const userNews = req.body;
 
-    let mailOptions = {
-      from: process.env.EMAIL_USER,
+    await sendEmail({      
       to: userEmail,
       subject: "The news you asked for",
-      text: userNews,
-    };
+      text: this.toString(userNews),
+    })
 
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        console.log(error);
-        return res.status(500).send("Server Error");
-      } else {
-        console.log("Email sent: " + info.response);
-        return res.status(200).send("Email sent");
-      }
-    });
   } catch (error) {
     console.log(error);
     res.status(500).send("Server Error");

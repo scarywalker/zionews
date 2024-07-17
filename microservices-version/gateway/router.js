@@ -11,21 +11,30 @@ const targetPort = (target) => {
 };
 
 router.all("/:apiName/:path", async (req, res) => {
-  const target = req.params.apiName;
+  const isValid = req.headers.isvalid === "true";
+  const target = isValid  ? req.params.apiName : "auth";
   const port = targetPort(target);
 
-  if (!port) return res.status(400).send("Invalid target");
-
-  console.log(`Request to: ${target} on port: ${port}`);
-
   try {
-    const url = `http://${target}:${port}/api/v1/${target}/${req.params.path}`;
-    console.log(url);
+    let url = `http://${target}:${port}/api/v1/${target}/${req.params.path}`;
+
+    if (!isValid && req.params.apiName !== "auth") {
+      url = `http://auth:6000/api/v1/auth/${req.params.apiName}/${req.params.path}`;
+    }
+
+    console.log(`requesting to :${url}`);
+
+
     const response = await axios({
       method: req.method,
       url: url,
       data: req.body,
+      headers: {
+        token: req.get("token")
+      },
     });
+
+
     console.log(`Response from ${target}: ${response.data}`);
     res.send(response.data);
   } catch (error) {

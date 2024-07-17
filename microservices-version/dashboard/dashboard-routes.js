@@ -1,13 +1,12 @@
 const router = require("express").Router();
 const db = require("./db");
-const authorization = require("./middleware/authorization");
 
 // get user that logged, useless till frontend
 
-router.get("/", authorization, async (req, res) => {
+router.get("/:id", async (req, res) => {
   try {
     const user = await db.query("SELECT * FROM users WHERE user_id = $1", [
-      req.user_id,
+      req.params.id,
     ]);
 
     res.json(user.rows[0]);
@@ -19,7 +18,7 @@ router.get("/", authorization, async (req, res) => {
 
 // update user
 
-router.put("/:id", async (req, res) => {
+router.put("/update/:id/", async (req, res) => {
   try {
     await db.query(
       "UPDATE users SET user_name = $1, user_preferences = $2 where user_id = $3 returning *;",
