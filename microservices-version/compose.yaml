@@ -96,7 +96,7 @@ services:
       - DB_USER=postgres
       - DB_PASS=password
       - DB_NAME=zionet_db
-      - OPENAI_API_KEY=sk-proj-UYjexviWNWQOaR6mGGKnT3BlbkFJdX0naF5NG90lsudI4bB9
+      - OPENAI_API_KEY=
     depends_on:
       - db
 
