@@ -115,10 +115,10 @@ services:
       - DB_USER=postgres
       - DB_PASS=password
       - DB_NAME=zionet_db
-      - MAIL_TRANSPORTER_PORT=465
-      - MAIL_TRANSPORTER_HOST=smtp.gmail.com
-      - MAIL_SENDER_USER=gabrielgdischon@gmail.com
-      - MAIL_SENDER_PASS=wlhb ddya pwga yiym
+      # - MAIL_TRANSPORTER_PORT=465
+      # - MAIL_TRANSPORTER_HOST=smtp.gmail.com
+      # - MAIL_SENDER_USER=gabrielgdischon@gmail.com
+      # - MAIL_SENDER_PASS=wlhb ddya pwga yiym
     depends_on:
       - db
 
